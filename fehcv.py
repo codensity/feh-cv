@@ -1,3 +1,4 @@
+import argparse
 import numpy as np
 import cv2
 import json
@@ -6,7 +7,14 @@ import sys
 import tesserocr
 import threading
 
-enable_image_debug_windows = False
+parser = argparse.ArgumentParser(description="OCR for Fire Emblem Heroes")
+parser.add_argument("image_filename", metavar="IMAGE", type=str,
+    help="Input image to read")
+parser.add_argument("-d", "--debug", action="store_true",
+    help="Display intermediate images in windows")
+args = parser.parse_args()
+
+enable_image_debug_windows = args.debug
 
 def draw_rect_into(img, corners, color=0):
     line_thickness = 2
@@ -99,7 +107,7 @@ def read_rects(rects, reader, default_size):
             more = [default_size]
         reader.read_rect(name, v2_add(base_rect[0], offset), *more)
 
-img_filename = sys.argv[1]
+img_filename = args.image_filename
 
 img = cv2.imread(img_filename)
 plus_img = cv2.imread("plus.png")
